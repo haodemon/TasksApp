@@ -8,12 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import com.haodemon.tasks.Storage.*;
-
+import com.haodemon.tasks.Storage.SimpleStorage;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<String> items = new ArrayList<>();
+    private List<String> items;
     private ArrayAdapter<String> itemsAdapter;
     private ListView listViewItems;
 
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
         listViewItems = findViewById(R.id.listView);
         // read caches items from todo.txt
-        items = new SimpleFileReader().read(getFilesDir());
+        items = SimpleStorage.read(getFilesDir());
         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
         listViewItems.setAdapter(itemsAdapter);
 
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         itemsAdapter.add(itemText);
-        new SimpleFileWriter().write(getFilesDir(), items);
+        SimpleStorage.write(getFilesDir(), items);
         inputField.setText("");
     }
 
