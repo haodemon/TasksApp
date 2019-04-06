@@ -3,7 +3,6 @@ package com.haodemon.tasks;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -26,8 +25,11 @@ public class MainActivity extends AppCompatActivity {
         items = SimpleStorage.read(getFilesDir());
         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
         listViewItems.setAdapter(itemsAdapter);
-
-        setupListViewListener();
+        listViewItems.setOnItemLongClickListener((parent, view, pos, id) -> {
+            items.remove(pos);
+            itemsAdapter.notifyDataSetChanged();
+            return true;
+        });
     }
 
     public void addItem(View v) {
@@ -41,16 +43,5 @@ public class MainActivity extends AppCompatActivity {
         itemsAdapter.add(itemText);
         SimpleStorage.write(getFilesDir(), items);
         inputField.setText("");
-    }
-
-    private void setupListViewListener() {
-        listViewItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                items.remove(position);
-                itemsAdapter.notifyDataSetChanged();
-                return true;
-            }
-        });
     }
 }
