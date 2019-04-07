@@ -1,7 +1,10 @@
 package com.haodemon.tasks;
 
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -13,15 +16,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private List<String> items;
     private ArrayAdapter<String> itemsAdapter;
-    private ListView listViewItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listViewItems = findViewById(R.id.listView);
-        // read caches items from todo.txt
+        ListView listViewItems = findViewById(R.id.listView);
         items = SimpleStorage.read(getFilesDir());
         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
         listViewItems.setAdapter(itemsAdapter);
@@ -35,9 +36,14 @@ public class MainActivity extends AppCompatActivity {
     public void addItem(View v) {
         EditText inputField = findViewById(R.id.inputField);
         String itemText = inputField.getText().toString();
-        // todo create a notification that the input field should not be empty
         if (itemText.isEmpty()) {
-            inputField.setText("");
+            getWindow().getDecorView().performHapticFeedback(
+                    HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+            Snackbar.make(inputField, getString(R.string.snackbar_empty_task), Snackbar.LENGTH_SHORT)
+                    .setAction(getString(R.string.snackbar_ok), view -> {})
+                    .setActionTextColor(Color.RED)
+                    .show();
             return;
         }
         itemsAdapter.add(itemText);
