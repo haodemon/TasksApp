@@ -47,7 +47,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         itemsAdapter.add(itemText);
-        SimpleStorage.write(getFilesDir(), items);
         inputField.setText("");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SimpleStorage.write(getFilesDir(), items);
     }
 }
